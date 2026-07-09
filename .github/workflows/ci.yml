@@ -1,0 +1,22 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile demo (C99, gnu dialect for M_PI)
+        run: cc -O2 -Wall -Wextra -o /tmp/qdsp_demo examples/demo.c
+      - name: Run demo (band-pass + Goertzel tone detect)
+        run: /tmp/qdsp_demo
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Floating-point reference check
+        run: python examples/reference.py
+      - name: Coefficient generators
+        run: |
+          python tools/gen_biquad.py  --type bandpass --f0 1000 --fs 48000 --q 0.707
+          python tools/gen_goertzel.py --freq 1000 --fs 48000 --n 256
