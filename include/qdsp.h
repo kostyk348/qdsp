@@ -124,7 +124,7 @@ static inline q15_t qdsp_onepole_process(qdsp_onepole_t *f, q15_t x) {
  * 2*cos(2*pi*k/N) in Q15 (use tools/gen_goertzel.py).
  */
 typedef struct {
-    q15_t coeff;       /**< 2*cos(2*pi*k/N) in Q15 */
+    int32_t coeff;     /**< 2*cos(2*pi*k/N) in Q15 (int32_t to accommodate |coeff| <= 2.0) */
     q15_t s_prev;      /**< s[n-1] */
     q15_t s_prev2;     /**< s[n-2] */
     int   n;           /**< samples processed in this block */
@@ -138,12 +138,12 @@ static inline void qdsp_goertzel_reset(qdsp_goertzel_t *g) {
 }
 
 static inline void qdsp_goertzel_process(qdsp_goertzel_t *g, q15_t x) {
-    /* s = x + coeff*s_prev - s_prev2 */
+    /* s = x + coeff*s_prev - s_prev2  (coeff is Q15 in int32_t) */
     int32_t s = (int32_t)x
-              + q15_mul(g->coeff, g->s_prev)
+              + ((g->coeff * (int32_t)g->s_prev) >> 15)
               - (int32_t)g->s_prev2;
     g->s_prev2 = g->s_prev;
-    g->s_prev  = (q15_t)s;
+    g->s_prev  = q15_sat(s);
     g->n++;
 }
 
@@ -151,7 +151,7 @@ static inline void qdsp_goertzel_process(qdsp_goertzel_t *g, q15_t x) {
 static inline q15_t qdsp_goertzel_power(qdsp_goertzel_t *g) {
     int32_t sp  = g->s_prev;
     int32_t sp2 = g->s_prev2;
-    int32_t term = q15_mul(g->coeff, (q15_t)(sp - sp2));
+    int32_t term = (g->coeff * (int32_t)(sp - sp2)) >> 15;
     int32_t mag  = sp * sp + sp2 * sp2 - term * (sp - sp2);
     /* scale down from ~Q30 to Q15 */
     return q15_sat(mag >> 15);

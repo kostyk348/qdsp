@@ -14,7 +14,7 @@ def main():
     k = int(round(a.freq / a.fs * a.n))
     coeff = 2.0 * math.cos(2 * math.pi * k / a.n)
     qv = int(round(coeff * Q15))
-    qv = max(-32768, min(32767, qv))
+    qv = max(-65536, min(65535, qv))
     print(f"/* detect {a.freq} Hz in block N={a.n} (k={k}) */")
     print(f"qdsp_goertzel_t g = {{ .coeff = {qv}, .s_prev = 0, .s_prev2 = 0, .n = 0, .N = {a.n} }};")
 
