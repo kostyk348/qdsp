@@ -1,5 +1,8 @@
 # qdsp
 
+[![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
+
+
 **Branchless, fixed-point (Q15) DSP primitives for microcontrollers without a
 floating-point unit.**
 
@@ -28,6 +31,9 @@ the classic IIR/FIR primitives that real audio and sensor pipelines need.
 ```c
 #include "qdsp.h"
 
+[![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
+
+
 qdsp_biquad_t bp = { /* coeffs from tools/gen_biquad.py */ };
 qdsp_goertzel_t gz = { /* coeffs from tools/gen_goertzel.py */ };
 
@@ -53,7 +59,13 @@ runs the envelope follower and Goertzel detector, and prints the result.
 ```bash
 cc -O2 -o demo examples/demo.c && ./demo
 # Goertzel power (Q15) = 18551  (threshold 8191)
+
+[![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
+
 # Tone 1000 Hz DETECTED
+
+[![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
+
 ```
 
 `examples/reference.py` is the floating-point reference used to validate the
