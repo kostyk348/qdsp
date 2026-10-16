@@ -1,7 +1,9 @@
 # qdsp
 
 [![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
-
+[![Release](https://img.shields.io/github/v/release/kostyk348/qdsp?sort=semver&color=blue)](https://github.com/kostyk348/qdsp/releases)
+[![License](https://img.shields.io/badge/license-Apache-2.0-green)](https://github.com/kostyk348/qdsp/blob/main/LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/kostyk348/qdsp?branch=main)](https://github.com/kostyk348/qdsp/commits/main)
 
 **Branchless, fixed-point (Q15) DSP primitives for microcontrollers without a
 floating-point unit.**
@@ -32,7 +34,6 @@ the classic IIR/FIR primitives that real audio and sensor pipelines need.
 #include "qdsp.h"
 
 [![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
-
 
 qdsp_biquad_t bp = { /* coeffs from tools/gen_biquad.py */ };
 qdsp_goertzel_t gz = { /* coeffs from tools/gen_goertzel.py */ };
