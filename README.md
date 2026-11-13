@@ -1,12 +1,20 @@
+<div align="center">
+
+<img src="docs/banner.svg" alt="qdsp banner" width="1000">
+
 # qdsp
+
+### Branchless, fixed-point (Q15) DSP primitives for microcontrollers without a floating-point unit.
 
 [![CI](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml/badge.svg)](https://github.com/kostyk348/qdsp/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/kostyk348/qdsp?sort=semver&color=blue)](https://github.com/kostyk348/qdsp/releases)
 [![License](https://img.shields.io/badge/license-Apache-2.0-green)](https://github.com/kostyk348/qdsp/blob/main/LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/kostyk348/qdsp?branch=main)](https://github.com/kostyk348/qdsp/commits/main)
 
-**Branchless, fixed-point (Q15) DSP primitives for microcontrollers without a
-floating-point unit.**
+</div>
+
+---
+
 
 `qdsp` is a header-only C99 library of digital-signal-processing building
 blocks that run on FPU-less MCUs (Cortex-M0/M3, ESP32 in soft-float,
