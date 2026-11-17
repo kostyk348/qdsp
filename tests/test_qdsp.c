@@ -9,6 +9,7 @@
  * Всё считается в Q15: 1.0 == 32767 (Q15_ONE), значения в диапазоне [-32768, 32767].
  */
 #include <math.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
