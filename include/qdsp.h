@@ -58,7 +58,10 @@ static inline q15_t q15_sub(q15_t a, q15_t b) {
 static inline q15_t q15_abs(q15_t a) {
     /* mask = 0xFFFF if a<0 else 0x0000; result = (a ^ mask) - mask */
     uint16_t mask = (uint16_t)(-(a < 0));
-    return (q15_t)(((uint16_t)a ^ mask) - mask);
+    q15_t r = (q15_t)(((uint16_t)a ^ mask) - mask);
+    /* |−1.0| не представимо в Q15: без насыщения q15_abs(-32768) возвращал -32768,
+       то есть отрицательное «абсолютное значение» (ломало огибающую и пик). */
+    return (r < 0) ? Q15_ONE : r;
 }
 
 /* ================================================================== */
@@ -209,15 +212,21 @@ static inline q15_t qdsp_peak_update(q15_t peak, q15_t x) {
 }
 
 /** Single-sample RMS accumulation step; call for every sample of a block,
- *  then call qdsp_rms_final() with the sample count. */
-static inline int32_t qdsp_rms_acc(int32_t acc, q15_t x) {
-    return acc + (int32_t)x * (int32_t)x;   /* sum of squares (Q30) */
+ *  then call qdsp_rms_final() with the sample count.
+ *
+ *  Аккумулятор 64-битный намеренно: x^2 для Q15 доходит до 2^30, поэтому int32_t
+ *  переполнялся уже на втором отсчёте полной шкалы — это неопределённое поведение
+ *  в C (и GCC 13+ честно предупреждает об этом). На 64 битах блок любой длины
+ *  (до 2^33 отсчётов) считается без переполнения. */
+static inline int64_t qdsp_rms_acc(int64_t acc, q15_t x) {
+    return acc + (int64_t)x * (int64_t)x;   /* sum of squares (Q30) */
 }
 
 /** Finalise RMS from accumulated sum-of-squares and N (returns Q15). */
-static inline q15_t qdsp_rms_final(int32_t acc, int n) {
-    /* crude integer sqrt via bit-by-bit; input is sum of x^2 in Q30 */
-    uint32_t v = (uint32_t)(acc / n);       /* mean square, ~Q30 */
+static inline q15_t qdsp_rms_final(int64_t acc, int n) {
+    if (n <= 0 || acc <= 0) return Q15_ZERO;
+    /* crude integer sqrt via bit-by-bit; mean square is Q30, sqrt is Q15 */
+    uint32_t v = (uint32_t)(acc / (int64_t)n);
     uint32_t root = 0, bit = 1u << 30;
     while (bit > v) bit >>= 2;
     while (bit) {
